@@ -1,13 +1,13 @@
-# Tokenizer-MIA 官方仓库审计
+# Tokenizer-MIA 上游仓库说明
 
-审计日期：2026-07-26（Asia/Shanghai）
-审计对象：[mengtong0110/Tokenizer-MIA](https://github.com/mengtong0110/Tokenizer-MIA)
-本地只读副本：`third_party/Tokenizer-MIA`
+记录日期：2026-07-26（Asia/Shanghai）
+上游项目：[mengtong0110/Tokenizer-MIA](https://github.com/mengtong0110/Tokenizer-MIA)
+本仓库中的只读 submodule：`third_party/Tokenizer-MIA`
 论文：[Membership Inference Attacks on Tokenizers of Large Language Models](https://arxiv.org/abs/2510.05699)
 
 ## 1. 版本与许可
 
-- 审计 commit：`eeb0d83b34dd13f203bf578814463d0654295798`。
+- 固定 commit：`eeb0d83b34dd13f203bf578814463d0654295798`。
 - 分支：`main`；该 commit 的提交时间为 2026-05-22 15:03:28 +0800，提交说明为 `Delete dp_defense directory`。
 - 代码 License：Apache License 2.0，见官方仓库 `LICENSE`。
 - 数据集 License：Hugging Face 的 [allenai/c4 数据卡](https://huggingface.co/datasets/allenai/c4)标注为 ODC-BY；网页原文仍可能带有各自权利和使用约束，全量下载前需再次做数据合规确认。

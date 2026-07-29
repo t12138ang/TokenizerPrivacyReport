@@ -40,7 +40,6 @@
 /logs/final/attempts/
 /logs/final/*.log
 /logs/final/downstream/
-/logs/final/CODEX_HANDOFF_LATEST.txt
 /logs/final/HARDWARE_SAFETY_STOP_*.txt
 /logs/paper_build.log
 /tmp/

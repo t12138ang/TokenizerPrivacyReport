@@ -1,0 +1,3 @@
+[submodule "third_party/Tokenizer-MIA"]
+	path = third_party/Tokenizer-MIA
+	url = https://github.com/mengtong0110/Tokenizer-MIA.git

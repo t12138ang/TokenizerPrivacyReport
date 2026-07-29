@@ -1,14 +1,14 @@
-# 独立环境审计
+# 独立环境说明
 
-审计日期：2026-07-26
-项目根：`D:\github\TokenizerPrivacyReport`
+记录日期：2026-07-26
+项目根：仓库根目录
 
 ## 结论
 
-项目环境成功建立在仓库私有前缀：
+项目环境成功建立在仓库内的独立前缀：
 
 ```text
-D:\github\TokenizerPrivacyReport\.conda\envs\tokenizer-privacy-report
+<repository-root>\.conda\envs\tokenizer-privacy-report
 ```
 
 没有激活、删除或安装包到 base 及其他已有 Conda 环境。官方要求的 Python 3.12 可用，实测为 Python 3.12.13，因此没有创建降级兼容环境。2026-07-27 最近一次 `pip check` 为 `No broken requirements found.`，43 项项目单元测试通过。
@@ -65,7 +65,7 @@ AG News 总配置的预检 revision 曾填写为一个不可解析候选值；�
 
 ## 环境建立异常与处置
 
-第一次长时 `conda env create` 已成功求解 Python 3.12，但事务校验报告共享用户缓存 `C:\Users\14309\.conda\pkgs\ucrt-10.0.26100.0-h57928b3_0` 缺少 DLL，触发 `CondaVerificationError`。这不是 Python 3.12 或官方 requirements 的版本冲突。
+第一次长时 `conda env create` 已成功求解 Python 3.12，但事务校验报告用户级 Conda 缓存中的 `ucrt-10.0.26100.0-h57928b3_0` 缺少 DLL，触发 `CondaVerificationError`。这不是 Python 3.12 或官方 requirements 的版本冲突。
 
 为避免改变共享缓存或其他环境，采用以下隔离处置：
 
@@ -78,7 +78,7 @@ AG News 总配置的预检 revision 曾填写为一个不可解析候选值；�
 
 ## Windows 调用方式
 
-普通 PowerShell 中 `conda` 不在 `PATH`，Anaconda 位于 `D:\anaconda`。本项目直接使用完整可执行路径或环境内 `python.exe`。系统 ExecutionPolicy 可能阻止直接启动 `.ps1`，因此使用进程级旁路，不永久更改系统策略：
+若普通 PowerShell 中 `conda` 不在 `PATH`，可从 Anaconda Prompt 执行，或使用本机 Anaconda 安装目录中的 `conda.exe`。创建完成后直接调用环境内的 `python.exe`。系统 ExecutionPolicy 可能阻止直接启动 `.ps1`，因此使用进程级旁路，不永久更改系统策略：
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_everything.ps1
@@ -88,7 +88,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_everything
 
 ```powershell
 $env:CONDA_PKGS_DIRS = "$PWD\.conda\pkgs"
-& 'D:\anaconda\Scripts\conda.exe' env create `
+conda env create `
   --prefix "$PWD\.conda\envs\tokenizer-privacy-report" `
   --file .\environment.yml
 ```

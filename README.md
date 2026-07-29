@@ -4,26 +4,50 @@
 
 本仓库对应现代密码学课程研究《面向分词器成员推断的站点级差分隐私与同态安全聚合方法》。项目在固定版本的 C4 网站语料上复现五类 Tokenizer 成员推断攻击，实现 Plain BPE、Min-count、Local-DP-BPE 与协议匹配基线，并评估融合站点级差分隐私和 Paillier 加法同态聚合的 SA-DP-BPE。下游效用使用 AG News 四分类任务，密码学实现使用真实 2048-bit Paillier 参数。
 
-第三方官方实现只保存在 `third_party/Tokenizer-MIA/`，固定提交为 `eeb0d83b34dd13f203bf578814463d0654295798`；本项目代码位于 `src/`，不直接修改第三方源码。
+Tokenizer-MIA 官方实现以 Git submodule 保存在 `third_party/Tokenizer-MIA/`，固定提交为 `eeb0d83b34dd13f203bf578814463d0654295798`；本项目代码位于 `src/`，不直接修改第三方源码。
 
 课程提交专用公开仓库为：<https://github.com/t12138ang/TokenizerPrivacyReport>。公开仓库由白名单生成，不包含原始语料、模型检查点、运行日志或作者个人准备材料。
+
+完整克隆仓库及固定版本的上游代码：
+
+```bash
+git clone --recurse-submodules https://github.com/t12138ang/TokenizerPrivacyReport.git
+cd TokenizerPrivacyReport
+git submodule status -- third_party/Tokenizer-MIA
+```
+
+对于已经克隆的工作区，初始化第三方 submodule：
+
+```bash
+git submodule update --init --recursive
+```
 
 ## 目录结构
 
 ```text
 TokenizerPrivacyReport/
-├── third_party/Tokenizer-MIA/  # 官方代码，只读
-├── src/                        # 攻击、防御、下游与密码学实现
 ├── configs/                    # 实验配置
-├── scripts/                    # 分阶段运行、检查和构建入口
-├── tests/                      # 单元测试
-├── data/                       # 本地数据，不进入 Git
-├── results/                    # 实验结果
-├── logs/                       # 运行日志
-├── docs/                       # 环境、数据和协议说明
+├── data/                       # 已跟踪的划分清单与验证记录
+├── docs/                       # 环境、上游仓库、数据和协议说明
+├── paper/                      # 课程报告的精简结果表
 ├── paper_jcr/                  # 《密码学报》模板版论文源码
-└── deliverables/               # 最终提交文件
+├── results/                    # 已公开的汇总结果、图表源数据和主方法元数据
+├── scripts/                    # 分阶段运行、检查和构建入口
+├── src/                        # 攻击、防御、下游与密码学实现
+├── tests/                      # 单元测试
+├── third_party/
+│   └── Tokenizer-MIA/          # 固定提交的官方 Git submodule
+├── .gitignore
+├── .gitmodules
+├── environment.yml
+├── requirements.txt
+└── README.md
 ```
+
+- `data/` 中只提交划分 manifest 和验证记录；原始 C4、AG News 与缓存数据在运行后本地生成，不进入 Git。
+- `logs/` 由运行脚本在本地生成，并由 `.gitignore` 排除。
+- `paper_jcr/build/` 是论文编译时生成的本地目录，不进入 Git。
+- `deliverables/` 中的课程提交文件单独提供，不进入公开代码仓库。
 
 ## 环境要求
 
@@ -35,7 +59,7 @@ Windows 上从空环境创建独立前缀：
 
 ```powershell
 $env:CONDA_PKGS_DIRS = "$PWD\.conda\pkgs"
-& 'D:\anaconda\Scripts\conda.exe' env create `
+conda env create `
   --prefix "$PWD\.conda\envs\tokenizer-privacy-report" `
   --file .\environment.yml
 ```
@@ -46,7 +70,7 @@ $env:CONDA_PKGS_DIRS = "$PWD\.conda\pkgs"
 & '.\.conda\envs\tokenizer-privacy-report\python.exe' -m unittest discover -s tests -v
 ```
 
-更详细的版本、CUDA 验证和 Windows 注意事项见 `docs/ENVIRONMENT_AUDIT.md`。
+更详细的版本、CUDA 验证和 Windows 注意事项见 [环境说明](docs/ENVIRONMENT.md)。
 
 ## 数据获取
 
@@ -151,18 +175,17 @@ Get-ChildItem .\paper_jcr\tables, .\paper_jcr\generated -Filter '*.tex'
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\reproduce_report.ps1 -PaperOnly
 ```
 
-论文构建显示三遍 XeLaTeX 进度和总耗时，日志为 `paper_jcr/build/build.log`，结果为 `paper_jcr/main.pdf`。`paper_jcr/README.md` 另列直接 XeLaTeX、PowerShell、Bash、latexmk 和 Overleaf 编译方式。
+论文构建显示三遍 XeLaTeX 进度和总耗时，日志在运行后生成于 `paper_jcr/build/build.log`，结果为 `paper_jcr/main.pdf`。[论文源码说明](paper_jcr/README.md)另列直接 XeLaTeX、PowerShell、Bash、latexmk 和 Overleaf 编译方式。
 
-## 结果目录
+## 已公开结果与本地运行产物
 
-- `results/final/runs/`：五类攻击运行状态。
-- `results/final/defenses/`：防御分词器、攻击与效用结果。
-- `results/final/downstream/`：AG News 计划、模型结果和阶段状态。
-- `results/final/crypto/`：真实 Paillier 正确性与重复测量。
-- `results/final/report_fast/`：24 组实测与 6 组模型预测的汇总。
+- `results/final/tables/`：论文使用的汇总表。
+- `results/final/figures/source_data/`：图表对应的源数据。
+- `results/final/defenses/main/tokenizers/`：已选主要防御配置的元数据。
+- `paper/tables/main_methods_summary.csv`：主要方法的精简结果表。
 - `paper_jcr/`：论文源码及由记录结果生成的图表。
 
-结果文件采用不覆盖写入和可恢复状态记录。模型预测值在表格与图中单独标记，不作为真实测量。
+完整运行会在本地生成攻击状态、模型检查点、下游训练产物、Paillier 单元结果和日志；这些大体积或机器相关文件按 `.gitignore` 规则不进入公开仓库。结果文件采用不覆盖写入和可恢复状态记录。模型预测值在表格与图中单独标记，不作为真实测量。
 
 ## 随机种子
 
@@ -195,8 +218,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\reproduce_repo
 
 - 攻击、分词器防御和 Paillier 基准主要使用 CPU；建议至少 8 个逻辑核心和 16 GiB 内存。
 - AG News 两层 Transformer 支持 CPU 回退；建议使用至少 4 GiB 显存的 CUDA GPU。当前 GTX 1050 Ti 4 GiB 已完成所报告任务。
-- 正式配置要求运行前至少保留 40 GiB 磁盘空间。若复现官方仓库原始的大规模影子分词器流程，磁盘和内存需求明显更高，详见 `docs/OFFICIAL_REPO_AUDIT.md`。
+- 正式配置要求运行前至少保留 40 GiB 磁盘空间。若复现官方仓库原始的大规模影子分词器流程，磁盘和内存需求明显更高，详见 [Tokenizer-MIA 上游仓库说明](docs/UPSTREAM_TOKENIZER_MIA.md)。
 
 ## 许可证与引用
 
-本仓库尚未配置统一开源许可证。第三方代码和 Python 依赖分别受其自身许可证约束，其中 `phe==1.5.0` 作为外部运行依赖使用。公开仓库前应由作者确认课程提交要求与许可证选择。
+本仓库用于课程报告的代码与结果复现。仓库目前未设置统一开源许可证；第三方代码与依赖分别遵循其原始许可证。
