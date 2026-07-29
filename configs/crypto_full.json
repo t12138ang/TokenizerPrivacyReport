@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "description": "One actual end-to-end 2048-bit Paillier SA-DP-BPE run for complete-tokenizer timing and artifact equivalence",
+  "scale": "development",
+  "protocol": "strict_disjoint",
+  "seed": 20260726,
+  "requested_vocab_size": 4000,
+  "epsilon_total": 4.0,
+  "clipping_percentile": 75,
+  "batch_merge_size": 32,
+  "candidate_pool_size": 1024,
+  "key_bits": 2048,
+  "worker_processes": 6,
+  "cleartext_reference_method_id": "sa_dp_eps4p0_C75_b32_K1024",
+  "real_method_id": "formal_real_paillier_sa_dp_reference",
+  "output_dir": "results/final/crypto/full_tokenizer_2048",
+  "summary_path": "results/final/crypto/full_tokenizer_summary.json"
+}

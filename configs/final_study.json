@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "protocol": "strict_disjoint",
+  "seeds": [20260726, 20260727, 20260728],
+  "vocab_sizes": [4000, 8000, 16000, 32000],
+  "main_shadow_count": 32,
+  "frequency_shadow_count": 1,
+  "auxiliary_sampling_group_count": 10,
+  "naive_bayes_top_k": 20000,
+  "tokenizers_threads": 4,
+  "shadow_sensitivity_counts": [8, 16, 32, 64, 96],
+  "shadow_sensitivity_configuration": {
+    "scale": "main",
+    "protocol": "strict_disjoint",
+    "vocab_size": 16000,
+    "method": "plain_bpe",
+    "seed": 20260726
+  },
+  "attacks": [
+    "compression_rate",
+    "vocabulary_overlap",
+    "frequency_estimation",
+    "merge_similarity",
+    "naive_bayes"
+  ],
+  "min_count_thresholds": [2, 5, 10],
+  "baseline_methods": [
+    {"id": "plain_bpe", "defense": "plain_bpe", "min_count_threshold": 0},
+    {"id": "min_count_2", "defense": "min_count", "min_count_threshold": 2},
+    {"id": "min_count_5", "defense": "min_count", "min_count_threshold": 5},
+    {"id": "min_count_10", "defense": "min_count", "min_count_threshold": 10}
+  ],
+  "development_grid": {
+    "epsilon_total": [0.5, 1.0, 2.0, 4.0, 8.0, 16.0],
+    "clipping_percentile": [50, 75, 90],
+    "batch_merge_size": [1, 8, 32, 64],
+    "candidate_pool_size": [512, 1024, 2048, 4096]
+  },
+  "development_search_design": {
+    "design": "predeclared_one_factor_screen_then_shortlist",
+    "vocab_size": 4000,
+    "reference": {"epsilon_total": 4.0, "clipping_percentile": 75, "batch_merge_size": 32, "candidate_pool_size": 1024},
+    "screen_all_levels_once": true,
+    "local_dp_screen_dimensions": ["epsilon_total", "clipping_percentile"],
+    "maximum_downstream_shortlist_per_private_method": 3,
+    "rationale": "cover every declared level without an uninformative 288-cell Cartesian explosion; shortlist decisions use Development only"
+  },
+  "defense_main_configuration": {
+    "vocab_size": 16000,
+    "shadow_reference_method": "plain_bpe",
+    "sa_dp_report_count": 2,
+    "he_execution_for_full_tokenizer": "protocol_equivalent_cleartext_with_separate_real_paillier_correctness_and_benchmark"
+  },
+  "selection_rule": {
+    "frozen_before_main": true,
+    "max_macro_f1_drop_points": 3.0,
+    "max_mean_token_increase_fraction": 0.2,
+    "objective": "minimize mean attack AUC; tie-break by lower token increase, then lower crypto time, then smaller epsilon_total",
+    "sa_dp_secondary_rule": "after the primary tradeoff choice, select the lowest-epsilon eligible distinct SA-DP configuration; tie-break by the same objective"
+  },
+  "dp": {
+    "adjacency": "add_remove_one_complete_site",
+    "mechanism": "two_sided_geometric",
+    "composition": "basic_sequential",
+    "integerization": "deterministic_largest_remainder"
+  },
+  "paillier": {
+    "smoke_key_bits": 1024,
+    "formal_key_bits": 2048,
+    "warmup_repetitions": 5,
+    "measured_repetitions": 20,
+    "parallel_worker_processes": 6,
+    "client_counts": [2, 4, 8, 16, 32, 64],
+    "candidate_dimensions": [128, 512, 1024, 2048, 4096]
+  },
+  "downstream": {
+    "dataset": "ag_news",
+    "dataset_revision": "eb185aade064a813bc0b7f42de02595523103ca4",
+    "embedding_dim": 128,
+    "transformer_layers": 2,
+    "attention_heads": 4,
+    "ffn_dim": 256,
+    "max_sequence_length": 256,
+    "dropout": 0.1,
+    "epochs": 8,
+    "early_stopping_patience": 2,
+    "batch_size": 64,
+    "learning_rate": 0.001
+  },
+  "bootstrap_iterations": 10000,
+  "bootstrap_confidence": 0.95,
+  "max_peak_memory_bytes": 12884901888,
+  "min_free_disk_bytes": 42949672960,
+  "results_root": "results/final",
+  "logs_root": "logs/final"
+}

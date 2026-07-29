@@ -1,0 +1,11 @@
+\begin{tabular}{lrrrr}
+\toprule
+方法 & 平均原始AUC & 平均$\mathrm{AUC}_{\rm adapt}$ & $D_{\rm AUC}$ & Macro-F1 \\
+\midrule
+Plain BPE & 0.5881 & 0.5881 & 0.1763 & 0.9068 \\
+协议匹配无 DP 基线 & 0.4991 & 0.5283 & 0.0566 & 0.9063 \\
+Local-DP-BPE（$\varepsilon=16$） & 0.4876 & 0.5160 & 0.0320 & 0.9047 \\
+SA-DP-BPE（$\varepsilon=8$） & 0.4869 & 0.5158 & 0.0316 & 0.9069 \\
+SA-DP-BPE（$\varepsilon=4$） & 0.4865 & 0.5162 & 0.0323 & 0.9045 \\
+\bottomrule
+\end{tabular}

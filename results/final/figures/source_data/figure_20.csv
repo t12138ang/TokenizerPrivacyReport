@@ -1,0 +1,21 @@
+clients,K,stage,seconds,data_source
+16,1024,Encryption,46.61297803499038,measured
+16,1024,Aggregation,0.2541207799920812,measured
+16,1024,Noise encryption,2.7107709549949504,measured
+16,1024,Decryption,0.7761758400010876,measured
+16,1024,Selection,0.0012618999928236008,measured
+32,2048,Encryption,172.0589949649875,measured
+32,2048,Aggregation,0.9662549100001343,measured
+32,2048,Noise encryption,5.012316354981158,measured
+32,2048,Decryption,1.4337057399679907,measured
+32,2048,Selection,0.0024916499969549477,measured
+32,4096,Encryption,348.6283997557448,extrapolated
+32,4096,Aggregation,1.992271490913639,extrapolated
+32,4096,Noise encryption,10.405386814246377,extrapolated
+32,4096,Decryption,2.9384914727376783,extrapolated
+32,4096,Selection,0.007157818668140776,extrapolated
+64,4096,Encryption,671.8654904906675,extrapolated
+64,4096,Aggregation,4.035151838128311,extrapolated
+64,4096,Noise encryption,9.84823914903344,extrapolated
+64,4096,Decryption,2.6577877504184757,extrapolated
+64,4096,Selection,0.007012738971402387,extrapolated

@@ -1,0 +1,18 @@
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{1.8pt}
+\renewcommand{\arraystretch}{1.14}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.65cm}>{\raggedright\arraybackslash}p{0.60cm}>{\raggedright\arraybackslash}p{2.60cm}>{\raggedright\arraybackslash}p{1.40cm}>{\raggedright\arraybackslash}p{1.75cm}>{\raggedright\arraybackslash}p{5.15cm}@{}}
+\toprule
+方法 & 年份 & 保护或攻击对象 & 作用阶段 & 隐私技术 & 主要假设 \\
+\midrule
+Tokenizer MIA\cite{tong2026tokenizermia} & 2026 & Tokenizer：BPE 词表与合并规则 & 发布后攻击 & 无 & 目标分词器可查询或读取，并具备候选网站与辅助数据 \\
+IMIA\cite{du2026imia} & 2026 & 分类模型概率输出（非 Tokenizer） & 发布后攻击 & 无 & 黑盒概率输出、同分布辅助数据及少量目标感知模仿模型 \\
+SIGuard\cite{wang2025siguard} & 2025 & 安全推理预测输出（非 Tokenizer） & 推理输出防御 & MPC 输出扰动 & 半诚实安全推理参与方，可在密文置信向量上构造扰动 \\
+SOFT\cite{zhang2025soft} & 2025 & LLM 微调数据（非 Tokenizer） & 训练期防御 & 样本改写 & 可识别并改写高影响微调样本 \\
+Diffence\cite{peng2025diffence} & 2025 & 分类器输入（非 Tokenizer） & 推理前防御 & 扩散重生成 & 扩散模型重生成输入，并选择保持预测标签的重构 \\
+DOPPLER\cite{zhang2024doppler} & 2024 & 模型训练梯度（非 Tokenizer） & 训练期防御 & 差分隐私 & 可控制 DP 优化过程并对梯度序列应用低通滤波 \\
+SA-DP-BPE & 2026 & Tokenizer：站点词对计数与分词器 & 训练与发布 & 站点级 DP 与 Paillier & 客户端提交合法计数；双服务器诚实但好奇且非共谋 \\
+\bottomrule
+\end{tabular}
+\endgroup

@@ -1,0 +1,19 @@
+kind,source,target,label,x,y
+node,Public corpus,,Public corpus,0.12,0.78
+node,Clients P_i,,Clients P_i,0.12,0.25
+node,"Server A
+(no secret key)",,"Server A
+(no secret key)",0.4,0.5
+node,"Server D
+(secret key)",,"Server D
+(secret key)",0.65,0.5
+node,Tokenizer,,Tokenizer,0.9,0.5
+edge,Public corpus,"Server A
+(no secret key)",public top-K pairs,,
+edge,Clients P_i,"Server A
+(no secret key)",clipped Paillier ciphertexts,,
+edge,"Server A
+(no secret key)","Server D
+(secret key)",Paillier aggregate,,
+edge,"Server D
+(secret key)",Tokenizer,top-b IDs,,

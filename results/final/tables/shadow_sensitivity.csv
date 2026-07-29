@@ -1,0 +1,11 @@
+attack,shadow_count,seed,vocab_size,roc_auc,average_precision,balanced_accuracy,tpr_at_fpr_le_0_01,tpr_at_fpr_le_0_001,source
+merge_similarity,16,20260726,16000,0.5159683227539062,0.496149975042522,0.5390625,0.0078125,0.00390625,results/final/runs/shadow_sensitivity/shadows_16/merge_similarity.json
+vocabulary_overlap,16,20260726,16000,0.5379409790039062,0.5505632659430273,0.544921875,0.02734375,0.015625,results/final/runs/shadow_sensitivity/shadows_16/vocabulary_overlap.json
+merge_similarity,64,20260726,16000,0.537353515625,0.5584004609208986,0.5390625,0.04296875,0.02734375,results/final/runs/shadow_sensitivity/shadows_64/merge_similarity.json
+vocabulary_overlap,64,20260726,16000,0.6450042724609375,0.6927114471647984,0.611328125,0.171875,0.13671875,results/final/runs/shadow_sensitivity/shadows_64/vocabulary_overlap.json
+merge_similarity,8,20260726,16000,0.5116424560546875,0.5110516969407922,0.52734375,0.0,0.0,results/final/runs/shadow_sensitivity/shadows_8/merge_similarity.json
+vocabulary_overlap,8,20260726,16000,0.5160369873046875,0.5170355094537866,0.533203125,0.0,0.0,results/final/runs/shadow_sensitivity/shadows_8/vocabulary_overlap.json
+merge_similarity,96,20260726,16000,0.536651611328125,0.5576880339136362,0.544921875,0.04296875,0.01953125,results/final/runs/shadow_sensitivity/shadows_96/merge_similarity.json
+vocabulary_overlap,96,20260726,16000,0.68963623046875,0.7441471799490641,0.6640625,0.234375,0.19140625,results/final/runs/shadow_sensitivity/shadows_96/vocabulary_overlap.json
+vocabulary_overlap,32,20260726,16000,0.59234619140625,0.6302338695568427,0.576171875,0.1015625,0.05859375,results/final/runs/attacks/main/20260726/vocab_16000/plain_bpe/vocabulary_overlap.json
+merge_similarity,32,20260726,16000,0.5494842529296875,0.5402522577113232,0.55078125,0.0078125,0.00390625,results/final/runs/attacks/main/20260726/vocab_16000/plain_bpe/merge_similarity.json

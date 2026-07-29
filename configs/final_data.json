@@ -1,0 +1,39 @@
+{
+  "dataset_id": "allenai/c4",
+  "dataset_config": "en",
+  "dataset_split": "train",
+  "dataset_revision": "1588ec454efa1a09f29cd18ddd04fe05fc8653a2",
+  "seed": 20260726,
+  "scales": {
+    "development": {
+      "target_site_count": 128,
+      "shadow_auxiliary_site_count": 32,
+      "public_candidate_site_count": 32,
+      "min_texts_per_site": 10,
+      "max_texts_per_site": 100,
+      "max_shadow_count": 32
+    },
+    "main": {
+      "target_site_count": 512,
+      "shadow_auxiliary_site_count": 128,
+      "public_candidate_site_count": 128,
+      "min_texts_per_site": 20,
+      "max_texts_per_site": 100,
+      "max_shadow_count": 96
+    }
+  },
+  "candidate_buffer_multiplier": 1.25,
+  "min_text_chars": 200,
+  "max_text_chars": 50000,
+  "min_alpha_chars": 80,
+  "min_ascii_letter_ratio": 0.65,
+  "max_stream_records": 5000000,
+  "progress_every_records": 10000,
+  "max_elapsed_seconds": 86400,
+  "max_peak_memory_bytes": 12884901888,
+  "min_free_disk_bytes": 42949672960,
+  "corpus_dir": "data/final/corpus",
+  "manifest_dir": "data/final/manifests",
+  "validation_path": "data/final/validation.json",
+  "hf_cache_dir": "data/final/hf_cache"
+}

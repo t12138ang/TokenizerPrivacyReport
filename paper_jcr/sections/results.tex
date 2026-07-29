@@ -1,0 +1,86 @@
+\section{实验结果}
+
+\subsection{Plain BPE 的五类成员推断}
+
+表~\ref{tab:attack-main} 汇总独立主评估集上 16k Plain BPE 的三种子攻击结果。频率估计攻击的平均 AUC 最高，为 \StrongestPlainAUC；压缩率、词表重叠、合并相似度和朴素贝叶斯分别利用分词压缩、词表元素、合并结构和集合统计中的成员信号。
+
+\begin{table}
+\centering
+\caption{Plain BPE 五类攻击结果（均值$\pm$样本标准差）}{Five attacks on Plain BPE (mean $\pm$ sample standard deviation)}
+\label{tab:attack-main}
+\resizebox{\linewidth}{!}{\input{tables/attack_results_jcr.tex}}
+\sourceNote{来源：独立主评估集的三个随机种子；每种攻击均采用 10,000 次分层网站级 bootstrap。}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\linewidth]{figure_03_plain_roc.pdf}
+\includegraphics[width=0.49\linewidth]{figure_04_vocab_auc.pdf}
+\caption{Plain BPE 的攻击 ROC 与词表规模敏感性}{Attack ROC curves and vocabulary-size sensitivity for Plain BPE}
+\label{fig:plain-attacks}
+\end{figure}
+
+\subsection{标准基线、协议匹配基线与差分隐私}
+
+表~\ref{tab:main-comparison} 比较标准 Plain BPE、协议匹配无 DP 基线、Local-DP-BPE 和两种 SA-DP-BPE。Plain BPE 与协议匹配无 DP 基线的五攻击平均原始 AUC 分别为 \PlainMeanAttackAUC{} 和 \HEMeanAttackAUC。协议匹配基线在公共候选域、批量合并和聚合接口上与 SA-DP-BPE 保持一致，从而刻画候选域与训练路径对成员风险的影响。
+
+主 SA-DP-BPE 采用 $\varepsilon=8$、截断阈值取公共范数分布第 75 百分位、$b=32$ 和 $K=1024$，平均原始 AUC 为 \PrimaryMeanAttackAUC。Plain BPE 与 SA-DP-BPE 的差异体现了公共候选、批量合并和随机化的综合作用；差分隐私的增量影响主要通过协议匹配基线进行刻画。为避免分数方向反转造成误读，本文同时报告逐攻击方向适配 AUC：Plain BPE、协议匹配无 DP 基线和主 SA-DP-BPE 分别为 \PlainAdaptedAUC、\ProtocolBaselineAdaptedAUC{} 和 \PrimaryAdaptedAUC，对应 AUC偏离度为 \PlainAUCDeviation、\ProtocolBaselineAUCDeviation{} 和 \PrimaryAUCDeviation。协议匹配基线到主 SA-DP-BPE 的方向适配 AUC 降低约 0.0125，反映站点截断与随机化在协议匹配条件下带来的经验风险变化。上述结果对应本文设定的迁移攻击。
+
+Local-DP-BPE 采用 $\varepsilon=16$，平均原始 AUC 和方向适配 AUC 分别为 \LocalMeanAttackAUC{} 和 \LocalAdaptedAUC；主 SA-DP-BPE 采用 $\varepsilon=8$。两类方法的比较主要用于呈现不同配置下的隐私--效用权衡。
+
+\begin{table}
+\centering
+\caption{主要方法的原始与方向适配攻击指标}{Raw and direction-adapted attack metrics for the main methods}
+\label{tab:main-comparison}
+\resizebox{\linewidth}{!}{\input{tables/main_comparison_jcr.tex}}
+\sourceNote{原始 AUC 与 Macro-F1 为三个随机种子的实测汇总；平均 $\mathrm{AUC}_{\rm adapt}$ 和 $D_{\rm AUC}$ 由五种攻击逐项派生。$D_{\rm AUC}$ 表示 AUC偏离随机猜测的程度。}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.98\linewidth]{defense_attack_risk_jcr.pdf}
+\caption{五类迁移攻击的原始与逐攻击方向适配 ROC AUC}{Raw and per-attack direction-adapted ROC AUC for five transfer attacks}
+\sourceNote{右图对每种攻击分别计算 $\max(\mathrm{AUC}_j,1-\mathrm{AUC}_j)$，以消除评分方向的影响。}
+\label{fig:defense-risk}
+\end{figure}
+
+\subsection{Tokenizer 效用与 AG News}
+
+在留出 C4 语料上，Plain BPE 的 bytes/token 为 \PlainBytesPerToken，主 SA-DP-BPE 为 \PrimaryBytesPerToken，相对变化 \PrimaryBytesPerTokenChangePercent，对应约 0.89\% 的压缩效率变化。协议匹配无 DP 基线为 4.3264，表明公共候选与批量训练路径本身也会影响分词压缩特性。
+
+AG News 上，Plain BPE 的 Accuracy/Macro-F1 为 \PlainAccuracy/\PlainMacroFOne，主 SA-DP-BPE 为 \PrimaryAccuracy/\PrimaryMacroFOne，Macro-F1 差为 \PrimaryMacroFOneDelta。三个随机种子的平均 Macro-F1 保持在相近水平，表明 SA-DP-BPE 在本实验设置下维持了稳定的下游分类性能。Local-DP-BPE 和 $\varepsilon=4$ 的 SA-DP-BPE 的 Macro-F1 分别为 0.9047 和 0.9045。
+
+\begin{figure}
+\centering
+\includegraphics[width=0.98\linewidth]{utility_downstream_jcr.pdf}
+\caption{Tokenizer 压缩效用与 AG News Macro-F1}{Tokenizer compression utility and AG News Macro-F1}
+\sourceNote{柱高为独立主评估集三个随机种子的实测均值。}
+\label{fig:utility-downstream}
+\end{figure}
+
+\subsection{2048-bit Paillier 实测与模型预测}
+
+密码学开销实验在 \MeasuredCryptoCells{} 个参数组合上完成真实 2048-bit Paillier 重复测量，并基于这些实测结果对 \ExtrapolatedCryptoCells{} 个更大规模配置给出预测区间。表~\ref{tab:crypto-main} 将两类来源分别标记为“实测”和“模型预测”。
+
+\begin{table}
+\centering
+\caption{2048-bit Paillier 代表配置：实测与模型预测}{Representative 2048-bit Paillier configurations: measured and model-predicted}
+\label{tab:crypto-main}
+\resizebox{\linewidth}{!}{\input{generated/table_crypto.tex}}
+\sourceNote{实测配置均包含 5 次预热和 20 次正式运行；模型预测区间由实测配置拟合得到。通信量按 512 bytes/密文计算。}
+\end{table}
+
+总耗时模型 $T=a+bK+cNK$ 在 24 个实测配置上的 $R^2$ 为 \CryptoTotalModelRtwo，留一组合 MAPE 为 \CryptoTotalModelLOOMAPE。最大预测配置（64 客户端、$K=4096$）的总耗时为 \CryptoLargestEstimate{} s，预测区间为 [\CryptoLargestLower,\CryptoLargestUpper] s。全部实测配置的逐坐标解密结果与明文聚合一致，最大绝对误差为零。该结果验证了真实 Paillier 实现的聚合正确性，并显示在线开销主要随候选维度 $K$ 与客户端数量 $N$ 的乘积增长。
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\linewidth]{figure_17_crypto_total_vs_k_me.pdf}
+\includegraphics[width=0.49\linewidth]{figure_19_crypto_measured_vs_fitted.pdf}
+\caption{Paillier 总耗时缩放及实测--拟合关系}{Paillier total-time scaling and measured-versus-fitted relation}
+\sourceNote{圆点表示实测配置，星号表示模型预测配置；右图展示 24 个实测配置的模型拟合关系。}
+\label{fig:crypto-scaling}
+\end{figure}
+
+\subsection{综合结果分析}
+
+Plain BPE 的五类攻击平均方向适配 AUC 为 \PlainAdaptedAUC，显示固定 C4 网站语料上存在可测的站点级成员信号；协议匹配基线和主 SA-DP-BPE 的对应数值分别为 \ProtocolBaselineAdaptedAUC{} 和 \PrimaryAdaptedAUC。主 SA-DP-BPE 在留出 C4 上的压缩效率变化约为 0.89\%，AG News Macro-F1 为 \PrimaryMacroFOne。协议匹配基线说明候选域与批量训练路径本身也会改变成员风险，因此差分隐私的增量贡献需结合该基线理解。真实 Paillier 实验的逐坐标解密误差为零，在线耗时主要随 $NK$ 增长。密码学安全性由形式分析给出，实验数据刻画经验成员风险、分词效用和运行开销；成员风险对应本文设定的迁移攻击。

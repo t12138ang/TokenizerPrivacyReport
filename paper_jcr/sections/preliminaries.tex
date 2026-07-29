@@ -1,0 +1,76 @@
+\section{预备知识}
+
+\subsection{BPE 分词器与攻击指标}
+
+设第 $r$ 轮词表为 $V_r$。字节对编码（byte-pair encoding，BPE）统计符号序列中的相邻词对，选择高频词对 $(u,v)$ 并以新符号 $uv$ 替换。发布物包含词表和有序合并列表，因而构成训练频率的压缩投影。本文复现的五类攻击分别观察候选网站在目标分词器下的压缩率、词表重叠、频率估计、合并顺序相似度和朴素贝叶斯特征。攻击实现预先固定“分数越大越像成员”，真实标签只在最终度量阶段使用。
+
+原始 ROC AUC 保留冻结分数方向。设共有 $J$ 种攻击，$mathrm{AUC}_j$ 是第 $j$ 种攻击的实测 AUC。为避免把低于 0.5 的 AUC 自动解释为更安全，本文对每种攻击分别适配方向后再求平均：
+\begin{equation}
+ \overline{\mathrm{AUC}}_{\mathrm{adapt}}
+ =\frac{1}{J}\sum_{j=1}^{J}\max\{\mathrm{AUC}_j,1-\mathrm{AUC}_j\},\qquad
+ D_{\mathrm{AUC}}=\frac{1}{J}\sum_{j=1}^{J}2\lvert \mathrm{AUC}_j-0.5\rvert .
+ \label{eq:adaptive-auc}
+\end{equation}
+其中单项 $2\lvert\mathrm{AUC}_j-0.5\rvert$ 及其平均值 $D_{\mathrm{AUC}}$ 统称 ``AUC偏离度''（AUC deviation），只衡量 AUC 偏离随机猜测的程度，不等同于密码学或统计学中严格定义的 membership advantage。式~\eqref{eq:adaptive-auc} 不改变原攻击器，也不等同于已经执行防御感知的自适应攻击；尤其不能先求原始 AUC 均值再整体翻转。
+
+\subsection{站点级差分隐私}
+
+\begin{definition}[站点级 add/remove 邻接]
+设数据集 $\mathcal D=(D_1,\ldots,D_N)$ 的每个 $D_i$ 包含一个完整网站的全部文本。若 $\mathcal D$ 与 $\mathcal D'$ 恰好相差一个完整网站的加入或删除，则称二者站点级相邻，记为 $\mathcal D\simeq\mathcal D'$。全文只采用该 add/remove 定义，不与 replace-one 邻接混用。
+\end{definition}
+
+\begin{definition}[站点级纯差分隐私]
+随机机制 $\mathcal M$ 若对任意 $\mathcal D\simeq\mathcal D'$ 和任意可测输出集合 $S$ 满足
+\begin{equation}
+ \Pr[\mathcal M(\mathcal D)\in S]
+ \leq e^{\varepsilon}\Pr[\mathcal M(\mathcal D')\in S],
+ \label{eq:pure-dp}
+\end{equation}
+则称其满足站点级 $\varepsilon$-差分隐私（differential privacy，DP）。
+\end{definition}
+
+对 L1 敏感度为 $\Delta_1$ 的整数向量查询，实现中通过两个独立几何随机变量之差采样双边几何噪声，其概率质量函数为
+\begin{equation}
+ \Pr[Z=z]=\frac{1-\alpha}{1+\alpha}\alpha^{|z|},\qquad
+ \alpha=\exp(-\varepsilon/\Delta_1),\quad z\in\mathbb Z.
+ \label{eq:two-sided-geometric}
+\end{equation}
+噪声值采用任意精度整数表示，以避免定宽整数转换造成溢出。
+
+\subsection{Paillier 加法同态密码体制}
+
+Paillier 是概率型加法同态公钥密码体制，而非完全同态加密\cite{paillier1999}。密钥生成取等长大素数 $p,q$，令
+\begin{equation}
+ n=pq,\qquad \lambda=\operatorname{lcm}(p-1,q-1),\qquad
+ L(u)=\frac{u-1}{n}.
+\end{equation}
+选择 $g\in\mathbb Z_{n^2}^{*}$ 使 $\gcd(L(g^\lambda\bmod n^2),n)=1$，并计算
+\begin{equation}
+ \mu=\left[L(g^\lambda\bmod n^2)\right]^{-1}\bmod n.
+\end{equation}
+于是公钥和私钥分别为
+\begin{equation}
+ pk=(n,g),\qquad sk=(\lambda,\mu).
+\end{equation}
+
+明文空间为 $\mathbb Z_n$，密文属于 $\mathbb Z_{n^2}^{*}$。对消息 $m\in\mathbb Z_n$，随机选取 $r\leftarrow\mathbb Z_n^{*}$，加密与解密分别为
+\begin{align}
+ c&=E_{pk}(m;r)=g^m r^n\bmod n^2, \label{eq:paillier-enc}\\
+ m&=D_{sk}(c)=L(c^\lambda\bmod n^2)\mu\bmod n. \label{eq:paillier-dec}
+\end{align}
+随机数 $r$ 使同一明文的两次诚实加密以高概率产生不同密文。对任意合法消息和标量 $a$，有
+\begin{align}
+ E(m_1;r_1)E(m_2;r_2)&=E(m_1+m_2;r_1r_2)\pmod{n^2},\label{eq:paillier-add}\\
+ E(m;r)^a&=E(am;r^a)\pmod{n^2}.\label{eq:paillier-scalar}
+\end{align}
+式~\eqref{eq:paillier-add} 中的明文加法在模 $n$ 上进行。
+
+协议需要表示负噪声。抽象分析采用中心提升编码：整数 $a$ 编为 $[a]_n$；解码时将小于 $n/2$ 的剩余类解释为非负整数，其余解释为 $a-n$。实验原型采用 \texttt{phe} 的有符号定点编码，并以 \texttt{precision=1} 表示整数；该库使用比 $n/2$ 更保守的安全区间检测溢出。若每个坐标的真实和 $s$ 满足 $|s|<B_n$（$B_n$ 为有符号解码安全界），解密后得到整数 $s$；否则只得到模 $n$ 的剩余类并可能回绕。
+
+正式密码学开销实验请求 2048-bit 密钥，即调用密钥生成时令模数目标长度为 2048 bit，并在结果中检查实际 $n.\mathrm{bit\_length()}\geq2048$。这里的“2048-bit”指公开模数 $n$ 的位数，不表示 2048 bit 对称安全，也不意味着使用门限解密。主分词器矩阵为控制总成本采用协议等价明文聚合；真实 Paillier-2048 的正确性和分阶段成本在独立正式矩阵中测量。
+
+\begin{table}
+\centering
+\caption{主要符号}{Key notation}
+\input{generated/table_symbols.tex}
+\end{table}

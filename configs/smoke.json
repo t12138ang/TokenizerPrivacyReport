@@ -1,0 +1,10 @@
+{
+  "seed": 20260726,
+  "dataset_count": 8,
+  "documents_per_dataset": 12,
+  "target_member_fraction": 0.5,
+  "shadow_member_fraction": 0.5,
+  "requested_vocab_size": 256,
+  "min_frequency": 2,
+  "attack_method": "compression_rate"
+}

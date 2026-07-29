@@ -1,0 +1,15 @@
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.20\linewidth}p{0.14\linewidth}p{0.24\linewidth}p{0.24\linewidth}}
+\toprule
+阶段 & 执行方 & 计算复杂度 & 通信复杂度 \\
+\midrule
+本地截断与编码 & 客户端 & $O(K)$ & 无 \\
+Paillier 加密 & 客户端 & $O(K)$ 次加密 & $K$ 个密文 \\
+密文聚合 & 聚合服务器 $A$ & $O(NK)$ 次模乘 & 无额外客户端通信 \\
+噪声采样与加密 & 聚合服务器 $A$ & $O(K)$ 次采样和加密 & 无 \\
+聚合密文发送 & $A\rightarrow D$ & 无 & $K$ 个密文 \\
+解密 & 解密服务器 $D$ & $O(K)$ 次解密 & 无 \\
+top-$b$ 选择 & 解密服务器 $D$ & 排序实现为 $O(K\log K)$ & $b$ 个 merge IDs \\
+\bottomrule
+\end{tabular}
+\par\smallskip\footnotesize 来源：协议的循环与排序路径；$N$ 为客户端数，$K$ 为候选维度。KeyGen 是每个密钥对的一次性离线操作，表中聚焦在线阶段。

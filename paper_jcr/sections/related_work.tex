@@ -1,0 +1,34 @@
+\section{相关工作}
+
+\subsection{成员推断与隐私审计}
+
+Shokri 等以影子模型建立黑盒成员推断范式\cite{shokri2017mia}，ML-Leaks 随后放宽对目标结构和同分布影子数据的假设\cite{salem2019mlleaks}。Carlini 等强调似然比检验和极低误报率处的性能\cite{carlini2022firstprinciples}，难度校准研究则说明样本本身的难易度会混淆成员信号\cite{watson2022difficulty}。因此，可靠评估需要同时报告完整 ROC、低误报率性能，并预先固定评分方向。
+
+大模型场景进一步暴露了时间分布漂移和未知训练集问题。数据集推断研究表明，不同分布的非成员可制造虚假的攻击成功\cite{maini2024dataset}；自提示校准尝试从目标模型构造更贴近的参考分布\cite{fu2024spvmia}。PANORAMIA 用生成非成员减少重训练依赖\cite{kazmi2024panoramia}，OSLO 强调 TPR@0.1\% FPR 等低误报指标\cite{peng2024oslo}，Cascading/Proxy MIA 则系统讨论自适应影子模型与成员依赖\cite{du2026cascading}。视觉语言与扩散模型上的工作显示集合级成员推断同样适用于多种生成模型\cite{hu2025vlmmia,zhai2024clid,pang2025diffusionmia}。
+
+IMIA 使用黑盒分类模型的概率输出训练少量目标感知模仿模型，以缩放置信度刻画查询样本在目标模型、模仿成员行为和模仿非成员行为之间的距离\cite{du2026imia}。它以模仿训练替代大量目标无关影子模型，并通过固定方差似然比形式的距离分数完成判别。由于 IMIA 面向分类模型概率输出，而本文攻击直接作用于分词器词表、合并规则和编码行为，二者采用定性比较，不纳入同一数值评估。
+
+训练数据抽取展示了大模型可能逐字输出记忆内容\cite{carlini2021extract}，而隐私后门可由不可信预训练权重主动放大后续微调泄露\cite{wen2024privacybackdoors}。此外，恶意训练代码提供方甚至能在保持模型效用的同时植入更强成员信号\cite{chen2025facilitate}。这些主动威胁说明“发布物没有明显异常”不是安全证据。本文聚焦诚实执行的 Tokenizer 训练以及发布后的被动成员推断。恶意训练器与主动投毒属于更强的攻击模型，需要结合认证、范围证明和鲁棒聚合机制另行分析。
+
+差分隐私审计从另一方向给出经验下界。Jagielski 等利用投毒审计 DP-SGD 实现\cite{jagielski2020audit}，Nasr 等提高自然数据上的审计紧致性\cite{nasr2023tight}，Steinke 等将多次独立包含/排除压缩到一次训练运行\cite{steinke2023one}。形式会计刻画机制级保证，攻击曲线刻画特定攻击条件下的经验风险，本文同时报告二者以形成互补分析。
+
+\subsection{Tokenizer 与 BPE 泄露}
+
+BPE 通过迭代合并高频相邻单元处理稀有词\cite{sennrich2016bpe}，SentencePiece 展示了语言无关的工程实现\cite{kudo2018sentencepiece}。合并序列同时记录了语料统计。Hayase 等利用有序词表推断预训练数据的类别混合比例\cite{hayase2024mixture}；Tong 等进一步把目标提升为“某个数据集是否参与训练”，并提出本文复现的五种攻击\cite{tong2026tokenizermia}。与模型损失攻击相比，Tokenizer 攻击成本低，且发布物通常可白盒读取。
+
+Tokenizer 泄露还具有“训练目标与攻击统计同源”的特点：BPE 为减少编码长度而偏向训练语料中的高频串，攻击者恰好观察压缩率、词表包含关系和合并次序。删除低频 token 会同时弱化独特串和压缩能力，因此需要联合考察隐私与效用。本文在每个防御 Tokenizer 上运行全部五种攻击，并使用统一的留出效用语料和下游分类器进行综合评价。
+
+\subsection{差分隐私与安全聚合}
+
+差分隐私通过邻接数据集上输出分布的似然比限制个体影响\cite{dwork2006calibrating,dwork2014foundations}。DP-SGD 将裁剪与噪声用于梯度训练\cite{abadi2016dpsgd}；RDP 和最优组合可提供更紧会计\cite{mironov2017rdp,kairouz2015composition}。本文处理整数计数，选择双边几何机制；离散高斯工作说明精确离散采样对避免浮点漏洞的重要性\cite{canonne2020discrete}，几何机制则具有经典的计数查询效用依据\cite{ghosh2009geometric}。
+
+Paillier 基于复合剩余类提供概率加密和加法同态性\cite{paillier1999}。实用安全聚合可通过掩码与掉线恢复构造\cite{bonawitz2017secureagg}，也存在单服务器低通信方案\cite{bell2020secureagg}。本文采用 Paillier，主要利用其加法同态性构造可直接验证的“客户端加密—密文聚合—噪声加入—解密选择”流程。SIGuard 指出安全计算的输出仍可能遭成员推断\cite{wang2025siguard}，这支持本文将协议匹配无 DP 基线与 DP 防御分开。SOFT、Diffence 和 DOPPLER 分别从数据扰动、输入重生成及优化器降噪改进隐私效用\cite{zhang2025soft,peng2025diffence,zhang2024doppler}，与本文保护 Tokenizer 训练统计及发布物的目标互补。
+
+现有近年防御主要作用于模型训练、微调或安全计算输出，直接面向 Tokenizer 训练统计及发布成员风险的方案仍较少。因此，本文的数值实验采用任务匹配的机制级基线。鉴于相关方法的保护对象和实验任务不同，表\ref{tab:recent-work-comparison}仅从作用阶段、隐私技术和安全假设进行定性比较。
+
+\begin{table*}[t]
+\centering
+\caption{近三年相关攻击与防御的作用层次比较}{Comparison of recent attacks and defenses by protection layer}
+\label{tab:recent-work-comparison}
+\input{tables/recent_work_comparison.tex}
+\end{table*}

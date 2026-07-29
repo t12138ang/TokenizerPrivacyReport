@@ -1,0 +1,47 @@
+\section{系统模型与威胁模型}
+
+\subsection{参与方与安全目标}
+
+系统包含站点客户端 $P_i$、聚合服务器 $A$、解密服务器 $D$ 和发布后攻击者 $M$。每个 $P_i$ 持有一个网站的私有文本 $D_i$。$A$ 维护公开候选域、接收单客户端密文并执行同态聚合，但不持有私钥。$D$ 持有私钥，只接收带噪聚合密文，解密后执行兼容 top-$b$ 选择并返回合并标识。$M$ 获得最终 Tokenizer、候选网站文本和可能的公开辅助语料，可黑盒查询编码，也可白盒读取词表及合并序列。
+
+本文采用诚实但好奇且非共谋的双服务器模型。客户端按照协议生成合法计数向量与密文，聚合服务器和解密服务器均遵循协议流程，但可能分析各自可见的信息。安全目标包括训练期单站点统计的计算机密性以及最终分词器发布的站点级成员隐私。
+
+训练期机密性要求 $A$ 无法由单客户端上传恢复站点计数，且 $D$ 只接收带噪聚合而不接触单客户端密文；该目标由 Paillier 语义安全和角色分离支持。发布期站点成员隐私要求最终 Tokenizer 对加入或删除一个完整网站的分布变化受到隐私预算约束；该目标由站点截断、离散噪声和隐私会计共同实现。协议匹配无 DP 基线保留公共候选与批量训练路径，用于刻画训练机制本身对成员风险的影响。
+
+\subsection{协议视图}
+
+\begin{definition}[协议视图]
+固定安全参数 $\kappa$、第 $r$ 轮公共状态和各参与方随机性，定义
+\begin{align*}
+\mathrm{View}_A={}&(pk,Q_r,\{E_{pk}(\bar{\vect x}_{i,r})\}_{i=1}^{N},\vect z_r,
+E_{pk}(\vect z_r),C^{\rm agg}_r,C^{\rm noisy}_r,\mathsf{meta}_r),\\
+\mathrm{View}_D={}&(pk,sk,C^{\rm noisy}_r,\vect y_r,\mathsf{IDs}_r,\mathsf{meta}_r),\\
+\mathrm{View}_M={}&(T_{\rm final},D^*,\mathsf{aux},\mathsf{query\ transcripts}),
+\end{align*}
+其中 $Q_r$ 为公开候选，$\bar{\vect x}_{i,r}$ 为截断站点向量，$\vect z_r$ 为 $A$ 采样的噪声，$\vect y_r=\sum_i\bar{\vect x}_{i,r}+\vect z_r$，$\mathsf{IDs}_r$ 为返回的合并标识，$T_{\rm final}$ 为最终 Tokenizer。协议元数据包含维度、轮次、候选哈希和消息长度，但不包含私有明文。
+\end{definition}
+
+该定义明确 $A$ 掌握自身采样的噪声明文及其密文，$D$ 掌握带噪聚合明文；在非共谋执行中，二者的视图均不足以同时获得单站点上传、独立噪声与解密能力。若 $A$ 与 $D$ 共谋，则可结合 $\vect z_r$、$\vect y_r$ 和私钥恢复未扰动聚合或单客户端计数，训练期内部机密性随之失效。只要随机化与发布步骤仍按协议执行，外部 Tokenizer 的抽象站点级差分隐私分布仍由随机机制决定。该区分将内部计算机密性、外部发布隐私与非共谋信任假设分别刻画。
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{protocol_jcr.pdf}
+\caption{SA-DP-BPE 十步协议流：HE 保护中间统计量，DP 约束最终发布}{Ten-step SA-DP-BPE flow: HE protects intermediate statistics, whereas DP constrains the final release}
+\label{fig:protocol}
+\end{figure}
+
+\begin{table}
+\centering
+\caption{参与方可见信息与边界}{Visible information and trust boundaries}
+\begin{tabular}{p{0.12\linewidth}p{0.44\linewidth}p{0.35\linewidth}}
+\toprule
+实体 & 可见信息 & 不可见或不保证 \\
+\midrule
+$P_i$ & 自身站点、$pk$、公开候选与 Tokenizer 状态 & 其他站点明文、$sk$ \\
+$A$ & 单客户端密文、公开候选、自身采样的噪声明文及密文、聚合密文、协议元数据 & $sk$、单站点明文、带噪聚合明文 \\
+$D$ & $pk,sk$、带噪聚合密文及明文、top-$b$ 标识 & 单客户端密文、独立噪声值 \\
+$M$ & 最终 Tokenizer、候选网站、辅助语料与查询结果 & 训练期私有统计 \\
+\bottomrule
+\end{tabular}
+\sourceNote{来源：本文协议定义与诚实但好奇、非共谋的双服务器威胁模型。}
+\end{table}

@@ -1,0 +1,10 @@
+kind,source,target,label,x,y
+node,Target tokenizer,,Target tokenizer,0.1,0.68
+node,Candidate sites,,Candidate sites,0.1,0.25
+node,Fixed score,,Fixed score,0.38,0.46
+node,Member/nonmember labels,,Member/nonmember labels,0.64,0.25
+node,ROC / PR metrics,,ROC / PR metrics,0.9,0.46
+edge,Target tokenizer,Fixed score,query/artifact,,
+edge,Candidate sites,Fixed score,site text,,
+edge,Fixed score,ROC / PR metrics,membership score,,
+edge,Member/nonmember labels,ROC / PR metrics,metrics only,,

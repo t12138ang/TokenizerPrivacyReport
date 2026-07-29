@@ -1,0 +1,122 @@
+{
+  "corpus_sha256": "faae8f8dea8332b5e07d49a3c5ef0123aef3b1aa665e05321e8074da2da38b4e",
+  "dataset_id": "allenai/c4",
+  "dataset_revision": "1588ec454efa1a09f29cd18ddd04fe05fc8653a2",
+  "duplicate_and_anomaly_counts": {},
+  "elapsed_seconds": 59.048402399988845,
+  "environment": {
+    "generated_at_utc": "2026-07-26T13:43:24.398633+00:00",
+    "git": {
+      "branch": "gate3-final-study",
+      "commit": "66fd34e7274c121b5c3f28ab82025df6fd623fe0",
+      "tracked_worktree_dirty": false
+    },
+    "logical_cpu_count": 12,
+    "machine": "AMD64",
+    "packages": {
+      "datasets": "2.21.0",
+      "numpy": "2.3.2",
+      "scikit-learn": "1.7.1",
+      "tokenizers": "0.21.4"
+    },
+    "platform": "Windows-11-10.0.22631-SP0",
+    "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+    "python_executable": "D:\\github\\TokenizerPrivacyReport\\.conda\\envs\\tokenizer-privacy-report\\python.exe",
+    "python_version": "3.12.13",
+    "total_physical_memory_bytes": 17064644608
+  },
+  "errors": [],
+  "protocols": {
+    "development": {
+      "20260726": {
+        "errors": [],
+        "manifest_sha256": "33ba0aad539a8af9ea5f44c8e4aa0c35f89bfc879549bb805317652c695782d0",
+        "max_shadow_count": 32,
+        "member_site_count": 64,
+        "nonmember_site_count": 64,
+        "public_candidate_site_count": 32,
+        "shadow_auxiliary_site_count": 32,
+        "target_site_count": 128
+      },
+      "20260727": {
+        "errors": [],
+        "manifest_sha256": "9342f8c70b1497948f190732362820f4eb4d41d267e30b2801d533fd13ea02fa",
+        "max_shadow_count": 32,
+        "member_site_count": 64,
+        "nonmember_site_count": 64,
+        "public_candidate_site_count": 32,
+        "shadow_auxiliary_site_count": 32,
+        "target_site_count": 128
+      },
+      "20260728": {
+        "errors": [],
+        "manifest_sha256": "0c96a81755588bc623828a60a9d0dc23704d2f88640ac699149c906127add3b1",
+        "max_shadow_count": 32,
+        "member_site_count": 64,
+        "nonmember_site_count": 64,
+        "public_candidate_site_count": 32,
+        "shadow_auxiliary_site_count": 32,
+        "target_site_count": 128
+      }
+    },
+    "main": {
+      "20260726": {
+        "errors": [],
+        "manifest_sha256": "e9a283916c00f681fc0ae43c9d23f6f8e51484d1e9e6685bf76e9fef5b5e37c5",
+        "max_shadow_count": 96,
+        "member_site_count": 256,
+        "nonmember_site_count": 256,
+        "public_candidate_site_count": 128,
+        "shadow_auxiliary_site_count": 128,
+        "target_site_count": 512
+      },
+      "20260727": {
+        "errors": [],
+        "manifest_sha256": "53219ee37b5699307f6e44622df25138f7ea4cd75fbfd9e4e1aa026c4993bdb2",
+        "max_shadow_count": 96,
+        "member_site_count": 256,
+        "nonmember_site_count": 256,
+        "public_candidate_site_count": 128,
+        "shadow_auxiliary_site_count": 128,
+        "target_site_count": 512
+      },
+      "20260728": {
+        "errors": [],
+        "manifest_sha256": "518688619e6916bfd834530779a3b36d09d0de6c2ce56873217aeba29bebdb17",
+        "max_shadow_count": 96,
+        "member_site_count": 256,
+        "nonmember_site_count": 256,
+        "public_candidate_site_count": 128,
+        "shadow_auxiliary_site_count": 128,
+        "target_site_count": 512
+      }
+    }
+  },
+  "scale_site_counts": {
+    "development": 192,
+    "main": 768
+  },
+  "schema_version": 1,
+  "site_count": 960,
+  "site_index_sha256": "9f31040fe0de91c972697b1bdc813fcc6814e3b2743ba24fd83562d563d65139",
+  "status": "success",
+  "text_byte_length": {
+    "maximum": 55163,
+    "median": 1393.0,
+    "minimum": 200,
+    "p95": 6297.549999999996,
+    "total": 74238126
+  },
+  "text_char_length": {
+    "maximum": 49428,
+    "median": 1386.0,
+    "minimum": 200,
+    "p95": 6261.0
+  },
+  "text_count": 33524,
+  "texts_per_site": {
+    "maximum": 100,
+    "mean": 34.920833333333334,
+    "minimum": 10
+  }
+}

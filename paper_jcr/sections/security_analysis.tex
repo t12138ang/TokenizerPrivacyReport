@@ -1,0 +1,105 @@
+\section{正确性、隐私与机密性分析}
+
+\subsection{敏感度与聚合正确性}
+
+\begin{lemma}[单轮站点级敏感度]
+固定公开候选 $Q_r$。若每个站点经截断后满足 $\|\bar{\vect x}_{i,r}\|_1\leq C_r$，则聚合查询
+$f_r(\mathcal D)=\sum_i\bar{\vect x}_{i,r}$ 在站点级 add/remove 邻接下的 L1 敏感度满足 $\Delta_1(f_r)\leq C_r$。
+\end{lemma}
+\begin{proof}
+相邻数据集的聚合只相差被加入或删除站点的 $\bar{\vect x}_{i,r}$。该向量非负且 L1 范数不超过 $C_r$，故
+$\|f_r(\mathcal D)-f_r(\mathcal D')\|_1\leq C_r$。
+\end{proof}
+
+\begin{proposition}[Paillier 聚合正确性]
+设第 $j$ 个坐标的整数和
+\begin{equation}
+ s_{r,j}=\sum_{i=1}^{N}\bar{x}_{i,r}[j]+z_{r,j}
+ \label{eq:signed-sum}
+\end{equation}
+落在 Paillier 实现的有符号解码安全区间内，则 $D$ 对式~\eqref{eq:encrypted-noisy-aggregate} 解密并有符号解码后逐坐标恰得 $s_{r,j}$。
+\end{proposition}
+\begin{proof}
+反复应用式~\eqref{eq:paillier-add}，有
+\begin{align*}
+C^{\rm noisy}_{r,j}
+&=\left(\prod_i E_{pk}(\bar{x}_{i,r}[j])\right)E_{pk}(z_{r,j})\\
+&=E_{pk}\!\left(\sum_i\bar{x}_{i,r}[j]+z_{r,j}\right)\pmod{n^2}.
+\end{align*}
+由式~\eqref{eq:paillier-dec} 得到 $[s_{r,j}]_n$；安全区间条件保证中心提升（实际为 \texttt{phe} 的保守有符号解码）唯一恢复整数 $s_{r,j}$。
+\end{proof}
+
+\subsection{聚合服务器机密性}
+
+\begin{theorem}[聚合服务器视图的计算机密性]
+若判定复合剩余假设（decisional composite residuosity assumption，DCRA）成立、客户端诚实加密且 $A$ 与 $D$ 不共谋，则对任意两个同维度、同公开元数据的诚实客户端截断向量集合，$A$ 的视图中由客户端明文决定的部分计算不可区分。特别地，$A$ 不能以非可忽略优势由 $\mathrm{View}_A$ 恢复任一诚实客户端的计数向量。
+\end{theorem}
+\begin{proof}
+Paillier 在 DCRA 下满足选择明文攻击下的不可区分性（IND-CPA）。把客户端编号为 $t\in\{1,\ldots,N\}$，把每个向量的坐标编号为 $j\in\{1,\ldots,K\}$。定义内层混合 $H_{t,j}$（其中 $j\in\{0,\ldots,K\}$）：前 $t-1$ 个客户端的全部坐标已经替换为零消息的独立随机加密；第 $t$ 个客户端的前 $j$ 个坐标已经替换为零消息加密，其余坐标仍是真实消息加密；后续客户端也保持真实密文。于是 $H_{1,0}$ 是全真实密文视图，$H_{t,K}$ 与 $H_{t+1,0}$ 是同一分布，而 $H_{N,K}$ 是全零消息密文视图。$A$ 持有 $pk$，故它对客户端密文执行的乘法、对自身噪声的随机加密以及聚合密文的构造均为公开的多项式时间变换。
+
+固定任意 $t$ 和 $j\geq1$，相邻混合 $H_{t,j-1}$ 与 $H_{t,j}$ 只在第 $t$ 个客户端的第 $j$ 个密文上不同。若存在多项式时间区分器以非可忽略优势区分二者，则构造 Paillier IND-CPA 攻击者：它把该坐标的真实消息与零消息提交给挑战者，将返回的挑战密文填入位置 $(t,j)$，并利用公开密钥自行随机加密所有其余真实或零坐标，随后诚实生成噪声明文、噪声密文、聚合密文及公开协议元数据。区分器的输出即可用于猜测挑战比特，与 IND-CPA 矛盾。因此对每个坐标都有
+\begin{equation}
+ H_{t,j-1}\approx_c H_{t,j}.
+ \label{eq:nested-hybrid}
+\end{equation}
+沿客户端和坐标的字典序进行 $NK$ 次标准混合，并使用 $H_{t,K}\equiv H_{t+1,0}$，得到 $H_{1,0}\approx_c H_{N,K}$。故在服务器不共谋时，$A$ 无法从客户端密文视图中计算恢复诚实客户端的单站点计数向量。
+
+该结论是计算机密性而非信息论安全。它也不隐藏向量维度、轮数、候选域或消息长度，并且不认证客户端输入。
+\end{proof}
+
+\subsection{站点级差分隐私与组合}
+
+\begin{theorem}[抽象整数机制的单轮站点级 DP]
+固定此前公开输出和公共候选规则。若第 $r$ 轮对 $f_r(\mathcal D)$ 的每个坐标加入式~\eqref{eq:two-sided-geometric} 的独立噪声，且 $\alpha_r=\exp(-\varepsilon_r/C_r)$，则定义在整数域上的带噪聚合机制满足站点级 $\varepsilon_r$-DP。
+\end{theorem}
+\begin{proof}
+对任意相邻 $\mathcal D\simeq\mathcal D'$ 和任意输出向量 $\vect o\in\mathbb Z^{K_r}$，概率质量之比为
+\begin{align*}
+\frac{\Pr[f_r(\mathcal D)+\vect Z_r=\vect o]}
+{\Pr[f_r(\mathcal D')+\vect Z_r=\vect o]}
+&=\alpha_r^{\|\vect o-f_r(\mathcal D)\|_1-
+\|\vect o-f_r(\mathcal D')\|_1}\\
+&\leq \alpha_r^{-\|f_r(\mathcal D)-f_r(\mathcal D')\|_1}\\
+&\leq e^{\varepsilon_r},
+\end{align*}
+其中最后一步使用单轮敏感度引理。对输出集合求和即得式~\eqref{eq:pure-dp}。
+\end{proof}
+
+\begin{theorem}[多轮基本顺序组合]
+若第 $r$ 轮在给定此前所有发布结果后满足站点级 $\varepsilon_r$-DP，则 $R$ 轮自适应训练轨迹满足
+\begin{equation}
+ \varepsilon_{\rm total}=\sum_{r=1}^{R}\varepsilon_r
+ \label{eq:basic-composition}
+\end{equation}
+的站点级 DP。本文采用基本顺序组合进行纯差分隐私会计，即 $\delta=0$。
+\end{theorem}
+\begin{proof}
+把完整轨迹的联合概率分解为逐轮条件概率之积。每个条件概率比至多为 $e^{\varepsilon_r}$，相乘得到 $e^{\sum_r\varepsilon_r}$。候选可依赖先前公开输出，但固定条件历史后仍只使用公共候选语料和本轮机制，故自适应组合成立。
+\end{proof}
+
+\begin{corollary}[后处理]
+兼容 top-$b$ 选择、merge IDs 发布、BPE 状态更新和最终 Tokenizer 构造均为带噪聚合轨迹的后处理，不增加式~\eqref{eq:basic-composition} 的隐私预算。
+\end{corollary}
+
+\subsection{有限模空间、无界噪声与共谋}
+
+定理 2 描述定义在整数域上的双边几何机制。Paillier 明文空间为有限环 $\mathbb Z_n$，因此正确解码要求带噪聚合落在有符号编码的安全区间内。本文采用 2048-bit 模数，在全部实测配置中均通过编码与解码一致性检验。若需要在有限模域上建立不依赖安全区间条件的严格隐私保证，可采用周期化离散机制，或将尾部概率纳入 $(\varepsilon,\delta)$-差分隐私分析。
+
+服务器职责分离是训练期机密性的关键条件。$A$ 掌握 $\vect z_r$ 及单客户端密文，$D$ 持有私钥并掌握 $\sum_i\bar{\vect x}_{i,r}+\vect z_r$。两服务器共谋时可结合这些视图恢复单客户端计数或未扰动聚合，因而内部计算机密性依赖非共谋假设。若随机化与发布步骤仍按协议执行，外部 Tokenizer 的抽象站点级差分隐私分布继续由随机机制约束。面向共谋场景，门限 Paillier 与多方噪声生成可增强内部保护。
+
+\begin{table}
+\centering
+\caption{安全性质、理论依据与适用条件}{Security properties, foundations, and conditions}
+\begin{tabular}{p{0.25\linewidth}p{0.31\linewidth}p{0.35\linewidth}}
+\toprule
+安全性质 & 理论依据 & 适用条件或扩展方向 \\
+\midrule
+单客户端上传机密性 & DCRA 下 Paillier IND-CPA 混合论证 & 诚实加密与服务器非共谋 \\
+发布后站点成员隐私 & 截断、整数几何机制与基本组合 & 有限模域可结合周期机制或 $\delta$ 分析 \\
+聚合正确性 & 同态等式与有符号安全区间 & 带噪聚合位于安全解码区间 \\
+服务器职责分离 & 非共谋双服务器模型 & 共谋场景可采用门限解密和多方噪声 \\
+主动安全扩展 & 范围证明与认证机制 & 可结合鲁棒聚合及侧信道防护 \\
+\bottomrule
+\end{tabular}
+\sourceNote{来源：本文协议定义与形式化分析；HE 与 DP 分别对应训练期机密性和发布期隐私。}
+\end{table}

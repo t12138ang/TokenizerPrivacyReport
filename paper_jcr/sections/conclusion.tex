@@ -1,0 +1,7 @@
+\section{结论}
+
+本文针对公开 BPE 分词器可能泄露网站级训练成员信息的问题，提出了融合站点级差分隐私与 Paillier 同态安全聚合的 SA-DP-BPE 方法。该方法以完整网站为隐私单位，通过公共候选、确定性 L1 截断、双边几何噪声和批量兼容合并控制单站点对分词器训练的影响；双服务器协议则在非共谋假设下实现密文统计聚合。形式分析表明，Paillier 在 DCRA 下为单站点上传提供计算机密性，站点级随机机制及基本顺序组合为最终分词器发布提供隐私保证。
+
+实验结果显示，标准 Plain BPE、协议匹配无 DP 基线和主 SA-DP-BPE 的五类攻击平均方向适配 AUC 分别为 \PlainAdaptedAUC、\ProtocolBaselineAdaptedAUC{} 和 \PrimaryAdaptedAUC。主 SA-DP-BPE 的 AG News Macro-F1 为 \PrimaryMacroFOne，与 Plain BPE 的 \PlainMacroFOne{} 保持相近水平；留出 C4 语料上的压缩效率变化约为 0.89\%。真实 2048-bit Paillier 实验验证了密文聚合的正确性，并表明总开销主要随客户端数量与候选维度的乘积增长。在本文实验规模下，SA-DP-BPE 将发布侧成员风险、下游性能和 Paillier 在线开销纳入统一评估，为网站级隐私保护的分词器训练提供了可复现的基线方案。
+
+后续研究可聚焦有限模域中的严格离散机制，以及面向服务器共谋与主动参与方的协议扩展；多语言和不同下游任务可用于检验外部有效性。

@@ -1,0 +1,119 @@
+{
+  "corpus_sha256": "5a45a2cddfeded43a4e50140c1177d7e92fac4ab5041bfe47e01e50a6fb5132b",
+  "dataset_id": "allenai/c4",
+  "dataset_revision": "1588ec454efa1a09f29cd18ddd04fe05fc8653a2",
+  "duplicate_and_anomaly_counts": {
+    "text_count": 1399
+  },
+  "elapsed_seconds": 1.4143471999559551,
+  "environment": {
+    "generated_at_utc": "2026-07-26T07:25:48.185615+00:00",
+    "git": {
+      "branch": "gate2-natural-pilot",
+      "commit": "fbb0b5aed2ee213baa04474436750919addd145a",
+      "tracked_worktree_dirty": false
+    },
+    "logical_cpu_count": 12,
+    "machine": "AMD64",
+    "packages": {
+      "datasets": "2.21.0",
+      "numpy": "2.3.2",
+      "scikit-learn": "1.7.1",
+      "tokenizers": "0.21.4"
+    },
+    "platform": "Windows-11-10.0.22631-SP0",
+    "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+    "python_executable": "D:\\github\\TokenizerPrivacyReport\\.conda\\envs\\tokenizer-privacy-report\\python.exe",
+    "python_version": "3.12.13",
+    "total_physical_memory_bytes": 17064644608
+  },
+  "errors": [],
+  "forbidden_full_url_field_count": 0,
+  "protocols": {
+    "paper_aligned": {
+      "20260726": {
+        "auxiliary_site_count": 192,
+        "errors": [],
+        "manifest_sha256": "9e5e3130294700cf153f6b1fb80b6816fb502a69e221f014f176926e2f982b21",
+        "member_site_count": 64,
+        "nonmember_site_count": 64,
+        "target_auxiliary_overlap_count": 128,
+        "target_site_count": 128
+      },
+      "20260727": {
+        "auxiliary_site_count": 192,
+        "errors": [],
+        "manifest_sha256": "88f305db501b848a07ec2685308d13a9ef347a462bbe21b1b46eb1992f159f74",
+        "member_site_count": 64,
+        "nonmember_site_count": 64,
+        "target_auxiliary_overlap_count": 128,
+        "target_site_count": 128
+      },
+      "20260728": {
+        "auxiliary_site_count": 192,
+        "errors": [],
+        "manifest_sha256": "875096aa389196ba8a6f36d944ce24c9730c2911a945e67a7947b88ffd4fc41f",
+        "member_site_count": 64,
+        "nonmember_site_count": 64,
+        "target_auxiliary_overlap_count": 128,
+        "target_site_count": 128
+      }
+    },
+    "strict_disjoint": {
+      "20260726": {
+        "auxiliary_site_count": 64,
+        "errors": [],
+        "manifest_sha256": "fd37eb02b75b15fa3fe972409fec9ca7f76a3a769896af361e098c27ced22c10",
+        "member_site_count": 64,
+        "nonmember_site_count": 64,
+        "target_auxiliary_overlap_count": 0,
+        "target_site_count": 128
+      },
+      "20260727": {
+        "auxiliary_site_count": 64,
+        "errors": [],
+        "manifest_sha256": "81ef9f8383aeef8a1cf881ecb5684b618792f6ec30592fcdcf118486fcd125d3",
+        "member_site_count": 64,
+        "nonmember_site_count": 64,
+        "target_auxiliary_overlap_count": 0,
+        "target_site_count": 128
+      },
+      "20260728": {
+        "auxiliary_site_count": 64,
+        "errors": [],
+        "manifest_sha256": "5777e662f6400d32830ff06cb6d2c46a0b016619d71c8c96b32c6dbb0452256c",
+        "member_site_count": 64,
+        "nonmember_site_count": 64,
+        "target_auxiliary_overlap_count": 0,
+        "target_site_count": 128
+      }
+    }
+  },
+  "schema_version": 1,
+  "site_count": 192,
+  "site_id_in_text_count": 0,
+  "site_index_sha256": "a5f8195178b76d46dc955be6e9c123853bd2cf0ae997bb0014eeeb0f08deb0e1",
+  "site_text_counts": {
+    "maximum": 28,
+    "mean": 7.286458333333333,
+    "minimum": 5
+  },
+  "status": "success",
+  "text_byte_length": {
+    "maximum": 42839,
+    "median": 1588.0,
+    "minimum": 206,
+    "p95": 6863.599999999997,
+    "total": 3429590
+  },
+  "text_char_length": {
+    "maximum": 42796,
+    "median": 1581.0,
+    "minimum": 206,
+    "p25": 727.5,
+    "p75": 3100.0,
+    "p95": 6767.399999999997
+  },
+  "text_count": 1399,
+  "url_in_text_count": 0
+}

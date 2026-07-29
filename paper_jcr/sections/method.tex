@@ -1,0 +1,81 @@
+\section{SA-DP-BPE 协议}
+
+\subsection{公开候选与站点级截断}
+
+私有语料若直接用于明文发现候选词对，候选集合本身便会泄露频率信息。本文为每个数据划分设置与成员网站、非成员网站和影子辅助网站严格互斥的公共候选网站。第 $r$ 轮，$A$ 按当前公开 Tokenizer 对公共语料重新分词，从公共频率最高且尚未合并的词对中确定性选取至多 $K$ 个候选
+\begin{equation}
+ Q_r=(q_{r,1},\ldots,q_{r,K_r}),\qquad K_r\leq K,
+\end{equation}
+并发布候选哈希。客户端 $P_i$ 只计算
+\begin{equation}
+ \vect x_{i,r}[j]=\operatorname{count}_{D_i}(q_{r,j})\in\mathbb N.
+\end{equation}
+
+截断界 $C_r$ 由公共候选网站在本轮的 L1 范数分布取预先选定的分位数并向上取整，计算过程与私有站点范数相互独立。对非负向量 $\vect x$，理想缩放为
+\begin{equation}
+ \vect y=\vect x\min\left\{1,\frac{C_r}{\|\vect x\|_1}\right\}.
+ \label{eq:l1-clipping}
+\end{equation}
+为适配整数噪声和 Paillier 明文，本文以确定性最大余数法整数化式~\eqref{eq:l1-clipping}：先逐坐标下取整，再按小数余量降序、坐标索引升序补足剩余单位。所得 $\bar{\vect x}_{i,r}\in\mathbb N^{K_r}$ 满足
+\begin{equation}
+ \|\bar{\vect x}_{i,r}\|_1\leq C_r,
+\end{equation}
+且同一输入产生相同输出。任意精度整数路径避免先转为定宽 NumPy 整数造成静默溢出。
+
+\subsection{密文聚合与离散噪声}
+
+$D$ 运行 $\mathrm{KeyGen}(1^\kappa)$ 并把 $pk$ 分发给客户端和 $A$。客户端逐坐标随机加密截断向量。$A$ 不持有 $sk$，计算
+\begin{equation}
+ C^{\rm agg}_{r,j}=\prod_{i=1}^{N}E_{pk}(\bar{x}_{i,r}[j])
+ =E_{pk}\!\left(\sum_{i=1}^{N}\bar{x}_{i,r}[j]\right).
+ \label{eq:encrypted-aggregate}
+\end{equation}
+$A$ 以敏感度 $C_r$ 和单轮预算 $\varepsilon_r$ 独立采样式~\eqref{eq:two-sided-geometric} 的 $z_{r,j}$，然后计算
+\begin{equation}
+ C^{\rm noisy}_{r,j}=C^{\rm agg}_{r,j}E_{pk}(z_{r,j}).
+ \label{eq:encrypted-noisy-aggregate}
+\end{equation}
+$D$ 仅解密整条带噪聚合向量，按值降序、索引升序排序候选并选择最多 $b$ 个兼容合并；它不向 $A$ 返回频率，只返回 merge IDs。
+
+兼容性规则避免同一批次产生依赖环：设已选规则的左、右符号集合分别为 $L_r,R_r$，新候选 $(u,v)$ 仅当 $u\notin R_r$、$v\notin L_r$ 且输出符号 $uv$ 未被本批使用时接纳。top-$b$ 的排序复杂度按实际全排序实现为 $O(K\log K)$。该批处理路径减少交互轮数，但与标准逐轮 Plain BPE 的训练轨迹并不相同。
+
+\renewcommand{\algorithmcfname}{\normalfont\kaishu\zihao{-5} 算法}
+\SetAlgoCaptionSeparator{~}
+\begin{algorithm}[t]
+\zihao{6}
+\caption{\kaishu\zihao{-5} SA-DP-BPE 单轮训练协议}
+\label{alg:protocol}
+\KwIn{公共候选语料，客户端网站 $D_i$，公开状态，$K,b,C_r,\varepsilon_r$}
+\KwOut{至多 $b$ 个兼容 merge IDs 与更新后的公开状态}
+$A$ 由公共语料发布 $Q_r$ 与候选哈希\;
+\ForEach{客户端 $P_i$}{
+  统计 $\vect x_{i,r}$，截断整数化为 $\bar{\vect x}_{i,r}$\;
+  向 $A$ 上传 $E_{pk}(\bar{\vect x}_{i,r})$\;
+}
+$A$ 按式~\eqref{eq:encrypted-aggregate} 同态聚合\;
+$A$ 采样 $\vect z_r$，按式~\eqref{eq:encrypted-noisy-aggregate} 加入加密噪声\;
+$A$ 向 $D$ 发送 $C^{\rm noisy}_r$；$D$ 解密并执行兼容 top-$b$\;
+$D$ 仅返回 merge IDs；协调端更新并发布本轮 Tokenizer 状态\;
+\end{algorithm}
+
+\subsection{轮数与隐私会计}
+
+若目标词表比初始词表需新增 $M$ 个 merge，则计划轮数为
+\begin{equation}
+ R_{\rm plan}=\left\lceil M/b\right\rceil,
+ \qquad \varepsilon_r=\varepsilon_{\rm total}/R_{\rm plan}.
+ \label{eq:uniform-budget}
+\end{equation}
+隐私会计采用基本顺序组合，并按轮统计 $C_r$、$\varepsilon_r$、候选数、选中合并、实际词表和噪声 L1 范数。主评估阶段的三个私有方法均按式~\eqref{eq:uniform-budget} 完成训练，具体轮数、逐轮预算和截断范围见表~\ref{tab:accounting}。
+
+\begin{table}
+\centering
+\caption{主评估配置的站点级隐私会计}{Site-level privacy accounting for the main evaluation}
+\label{tab:accounting}
+\resizebox{\linewidth}{!}{\input{tables/privacy_accounting.tex}}
+\sourceNote{来源：主评估阶段的逐轮隐私会计；$K=1024$、$b=32$，采用基本顺序组合，并按计划轮数均匀分配总预算。$C_r$ 为公共范数分布分位数形成的逐轮实际范围。}
+\end{table}
+
+\subsection{实验实现与分层验证策略}
+
+为分别评估算法层面的成员风险与效用，以及密码学实现的正确性与运行开销，本文采用分层验证策略。成员推断、分词效用和下游分类实验使用协议等价的明文聚合实现，保持公共候选、站点截断、噪声采样和批量选择逻辑与密文协议一致。Paillier 密文聚合的正确性、通信量及加密、聚合和解密开销则通过独立的真实 2048-bit 实现测量。该设计能够避免密码学运算成本对大规模风险与效用评估造成干扰，同时分别呈现算法效果和密码学部署成本。

@@ -1,0 +1,32 @@
+{
+  "protocols": ["paper_aligned", "strict_disjoint"],
+  "seeds": [20260726, 20260727, 20260728],
+  "vocab_sizes": [2000, 4000, 8000],
+  "shadow_count": 8,
+  "tokenizers_threads": 6,
+  "bootstrap_iterations": 1000,
+  "bootstrap_confidence": 0.95,
+  "max_elapsed_seconds": 18000,
+  "gate2_total_wall_clock_budget_seconds": 21600,
+  "max_peak_memory_bytes": 12884901888,
+  "manifest_dir": "data/gate2/manifests",
+  "results_root": "results/gate2",
+  "methods": [
+    {
+      "id": "plain_bpe",
+      "defense": "plain_bpe",
+      "min_count_threshold": 0
+    },
+    {
+      "id": "min_count_16",
+      "defense": "min_count",
+      "min_count_threshold": 16
+    },
+    {
+      "id": "min_count_64",
+      "defense": "min_count",
+      "min_count_threshold": 64
+    }
+  ],
+  "attacks": ["compression_rate", "vocabulary_overlap"]
+}

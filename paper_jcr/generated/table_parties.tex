@@ -1,0 +1,10 @@
+\begin{tabular}{lp{0.31\linewidth}p{0.35\linewidth}}
+\toprule
+实体 & 可见信息 & 不可见/不保证 \\
+\midrule
+客户端 $P_i$ & 自身站点文本、公开候选、Paillier 公钥 & 其他站点明文 \\
+服务器 $A$ & 单客户端密文、加密噪声 & 私钥、明文频率 \\
+服务器 $D$ & 噪声后聚合、top-b 结果 & 单客户端密文、独立噪声值 \\
+外部攻击者 $M$ & 发布 Tokenizer、候选网站文本 & 训练期私有统计 \\
+\bottomrule
+\end{tabular}

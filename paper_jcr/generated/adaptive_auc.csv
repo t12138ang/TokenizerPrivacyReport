@@ -1,0 +1,6 @@
+﻿method_id,method_display,attack_count,mean_raw_auc_measured,mean_direction_adapted_auc_derived,mean_auc_deviation_derived,macro_f1_measured,derivation,source
+plain_bpe,Plain BPE,5,0.5881459554036458,0.5881459554036458,0.17629191080729165,0.9068,"mean_j max(AUC_j,1-AUC_j); D_AUC=mean_j 2*abs(AUC_j-0.5)",固定主评估攻击汇总与方法效用汇总
+he_only_reference,协议匹配无 DP 基线,5,0.4991058349609375,0.5282796223958333,0.05655924479166663,0.9063,"mean_j max(AUC_j,1-AUC_j); D_AUC=mean_j 2*abs(AUC_j-0.5)",固定主评估攻击汇总与方法效用汇总
+local_dp_eps16p0_C75_b32_K1024,Local-DP-BPE（ε=16，第75百分位截断）,5,0.48760223388671875,0.5160120646158853,0.0320241292317708,0.9047,"mean_j max(AUC_j,1-AUC_j); D_AUC=mean_j 2*abs(AUC_j-0.5)",固定主评估攻击汇总与方法效用汇总
+sa_dp_eps8p0_C75_b32_K1024,SA-DP-BPE（ε=8，第75百分位截断）,5,0.4868977864583333,0.5158060709635417,0.03161214192708335,0.9069,"mean_j max(AUC_j,1-AUC_j); D_AUC=mean_j 2*abs(AUC_j-0.5)",固定主评估攻击汇总与方法效用汇总
+sa_dp_eps4p0_C50_b32_K1024,SA-DP-BPE（ε=4，第50百分位截断）,5,0.4865193684895833,0.5161702473958333,0.03234049479166665,0.9045,"mean_j max(AUC_j,1-AUC_j); D_AUC=mean_j 2*abs(AUC_j-0.5)",固定主评估攻击汇总与方法效用汇总

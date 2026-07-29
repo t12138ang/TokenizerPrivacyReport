@@ -1,0 +1,48 @@
+\section{实验设置}
+
+\subsection{数据集划分与参数选择}
+
+网站语料来自固定版本 \FinalCfourRevision{} 的 \texttt{allenai/c4}\cite{raffel2020c4}，包含 \FinalCorpusSites{} 个自然网站、\FinalCorpusTexts{} 篇文本和 \FinalCorpusBytes{} 字节。数据集划分包括成员网站、非成员网站、影子辅助网站和公共候选网站，各部分保持严格互斥。开发集用于参数搜索和配置选择，独立主评估集仅在配置确定后用于最终攻击、效用和下游性能评估，从而避免主评估信息参与参数选择。三个随机种子为 20260726、20260727 和 20260728，具体规模见表~\ref{tab:dataset}。
+
+\begin{table}
+\centering
+\caption{C4 网站数据划分}{C4 website partitions}
+\resizebox{\linewidth}{!}{\input{generated/table_dataset.tex}}
+\sourceNote{目标网站由等量成员与非成员组成；影子辅助网站和公共候选网站均与目标网站互斥。}
+\label{tab:dataset}
+\end{table}
+
+参数选择阶段采用预先设定的单因素设计，覆盖 $\varepsilon\in\{0.5,1,2,4,8,16\}$、截断分位数 $\{50,75,90\}$、$b\in\{1,8,32,64\}$ 和 $K\in\{512,1024,2048,4096\}$。候选配置依据五类攻击平均 AUC、留出 C4 语料的 token 增长和 AG News 验证集 Macro-F1 综合筛选，并在独立主评估开始前确定最终方法配置。
+
+\subsection{攻击、基线与统计口径}
+
+Plain BPE 的词表规模覆盖 4k、8k、16k 和 32k，确定性基线为 Min-count BPE（阈值 2、5 和 10）。五类攻击中，词表重叠与合并相似度使用 32 个影子分词器，频率估计使用 1 个影子分词器及 10 组辅助抽样，朴素贝叶斯使用 10 组辅助成员集合，压缩率攻击直接由目标分词器计算。防御评估复用预先训练的 Plain BPE 影子分词器，因此对应结果属于迁移攻击。
+
+评价指标包括 ROC AUC、Average Precision、Balanced Accuracy、TPR@FPR$\leq1\%$ 和 TPR@FPR$\leq0.1\%$。每种攻击采用 10,000 次分层网站级 bootstrap 估计区间，方法差异使用相同网站索引的配对分层 bootstrap。三个随机种子报告均值与样本标准差。原始攻击分数方向保持固定，并按式~\eqref{eq:adaptive-auc} 补充逐攻击方向适配指标。
+
+\begin{figure}
+\centering
+\includegraphics[width=0.80\linewidth]{figure_02_attack_pipeline.pdf}
+\caption{成员推断攻击评估流程}{Membership-inference evaluation workflow}
+\sourceNote{成员标签仅用于最终指标计算，不参与攻击评分函数的确定。}
+\label{fig:attack-pipeline}
+\end{figure}
+
+\subsection{Tokenizer 效用与下游任务}
+
+Tokenizer 效用在同一组留出 C4 非成员网站上计算 bytes/token、tokens/document、实际词表规模、merge 数和训练时间。bytes/token 越大，表示编码相同字节所需 token 越少。下游任务采用 AG News 四分类\cite{zhang2015charcnn}：从官方训练集分层划分 90\%/10\% 的训练集和验证集，在验证集选择最优模型后对测试集评估一次。所有 Tokenizer 共用两层 Transformer Encoder，参数为 embedding 128、4 个注意力头、FFN 256、最大长度 256、dropout 0.1、AdamW 学习率 $10^{-3}$、有效 batch 64、最多 8 epoch 和 patience 2。
+
+标准 Plain BPE、协议匹配无 DP 基线、Local-DP-BPE 和两种 SA-DP-BPE 承担不同的对照作用。协议匹配无 DP 基线与 SA-DP-BPE 共享公共候选、批量训练和聚合接口，但不加入差分隐私噪声。成员风险、分词效用和下游分类采用协议等价明文聚合，以考察候选、截断、随机化和批量选择对算法结果的影响；真实 Paillier 则用于独立的正确性与开销测量。Local-DP-BPE 的隐私预算为 $\varepsilon=16$，主 SA-DP-BPE 为 $\varepsilon=8$，另一 SA-DP-BPE 为 $\varepsilon=4$，共同呈现不同配置下的隐私--效用权衡。
+
+\subsection{真实 Paillier-2048 开销实验}
+
+密码学开销实验考察客户端数量 $N$ 与候选维度 $K$ 对协议成本的影响。客户端数量取 $N\in\{2,4,8,16,32,64\}$，候选维度取 $K\in\{128,512,1024,2048,4096\}$。本文在其中 \MeasuredCryptoCells{} 个参数组合上完成真实 2048-bit Paillier 重复测量，每个组合包含 5 次预热和 20 次正式运行，并基于实测结果拟合缩放模型，对 \ExtrapolatedCryptoCells{} 个更大规模配置给出预测区间。实测值和模型预测值在表格及图中分别标记，以分析密码学开销随客户端数量和候选维度的变化规律。KeyGen 属于每个密钥对的一次性离线操作，本节的开销分析聚焦在线加密、聚合、噪声加入与解密阶段。
+
+\begin{table}
+\centering
+\caption{协议参与方的计算与通信复杂度}{Computation and communication costs by protocol party}
+\small\input{tables/participant_costs.tex}
+\label{tab:party-cost}
+\end{table}
+
+每个 2048-bit Paillier 密文按固定长度计为 512 bytes，客户端总上行为 $512NK$ bytes，$A\rightarrow D$ 发送 $K$ 个密文，$D$ 返回至多 $b$ 个 merge IDs。开销评估同时记录逐阶段耗时、通信字节、模数实际位数以及逐坐标明文与解密结果的一致性。

@@ -1,0 +1,68 @@
+% 与官方 jcr.cls 共存的最小兼容层；不得修改 template/ 中的官方文件。
+\newcommand{\method}{SA-DP-BPE}
+\newcommand{\vect}[1]{\bm{#1}}
+\newcommand{\measured}{\mathrm{M}}
+\newcommand{\extrapolated}{\mathrm{E}}
+\newcommand{\sourceNote}[1]{\par\smallskip\footnotesize #1}
+\setlist{nosep,leftmargin=*}
+\graphicspath{{figures/}}
+\hypersetup{
+  hidelinks,
+  unicode=true,
+  pdftitle={面向分词器成员推断的站点级差分隐私与同态安全聚合方法},
+  pdfauthor={Zhikai Tang (唐志凯)},
+  pdfsubject={现代密码学课程报告},
+  pdfkeywords={tokenizer, membership inference, site-level differential privacy, Paillier, secure aggregation},
+  pdfcreator={XeLaTeX with the official JCR template}
+}
+\input{generated/results_macros.tex}
+\input{generated/adaptive_auc.tex}
+
+% 课程报告保留官方正文版式，但移除期刊出版、编辑部、版权和引用格式栏。
+\makeatletter
+\fancypagestyle{firstpage}{%
+  \fancyhf{}%
+  \cfoot{\songti\zihao{-5}\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\fancyhf{}
+\fancyhead[LE,RO]{\songti\zihao{-5}\thepage}
+\fancyhead[LO,RE]{\kaishu\zihao{-5}\jcr@ctitle@short}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\def\maketitle{%
+  \thispagestyle{firstpage}%
+  \setstretch{1.2}%
+  \null\vspace{-8\p@}%
+  \bgroup
+    \raggedright\zihao{-5}\heiti 现代密码学课程报告
+  \egroup\par\vspace{12\p@}%
+  \bgroup
+    \raggedright\zihao{-2}\bfseries\boldmath
+    \jcr@ctitle@long
+  \egroup\par\vspace{22\p@}%
+  \bgroup
+    \raggedright\zihao{5}\fangsong
+    \scalebox{1}[1.66]{\jcr@coauthors}%
+  \egroup\par\vspace{15\p@}%
+  \bgroup
+    \raggedright\setstretch{1.0}\bahao
+    \jcr@coaddress
+  \egroup\par\vspace{15\p@}%
+  \ifvoid\abstractbox\else\unvbox\abstractbox\fi\par\medskip
+  \ifvoid\keywordsbox\else\unvbox\keywordsbox\fi\par\vspace{15\p@}%
+  \bgroup\raggedright
+    \bgroup\zihao{-4}\bfseries\boldmath\jcr@etitle@long\egroup\par\vspace{10\p@}%
+    \bgroup\zihao{-5}\jcr@coeauthors\egroup\par\vspace{10\p@}%
+    \bgroup
+      \setstretch{1.0}\bahao
+      \jcr@codaddress\par
+    \egroup\par\vspace{17\p@}%
+    \ifvoid\eabstractbox\else\unvbox\eabstractbox\par\medskip\fi
+    \ifvoid\ekeywordsbox\else\unvbox\ekeywordsbox\fi
+  \egroup\medskip
+}
+\makeatother
+

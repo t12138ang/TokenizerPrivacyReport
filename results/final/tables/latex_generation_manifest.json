@@ -1,0 +1,71 @@
+{
+  "generated_at_utc": "2026-07-29T04:12:28.588405+00:00",
+  "macro_file": "paper/generated/results_macros.tex",
+  "outputs": [
+    {
+      "path": "paper/generated/results_macros.tex",
+      "sha256": "2bb0feee95be79773d2bfd44dac200362065817a56cfd22acb9ee3f88eab5f8d"
+    },
+    {
+      "path": "paper/generated/table_symbols.tex",
+      "sha256": "3a2bae11b8d434f7ffcd71c36b062566a708fad7363223de1e67b5b5eb83f48c"
+    },
+    {
+      "path": "paper/generated/table_parties.tex",
+      "sha256": "5d7ae752d9951f03b51c1622c9570712a29a9c59ae34d0f299971bf5484c45e6"
+    },
+    {
+      "path": "paper/generated/table_dataset.tex",
+      "sha256": "7559216f0e186a3ab86481495d23ba3fea09a909d3e2ece4d03a6d478d2e83bf"
+    },
+    {
+      "path": "paper/generated/table_attack_results.tex",
+      "sha256": "77259196e6f37712fc9c8984f073c636deb9e58863f33dd2d8e5b5dd4dd8e499"
+    },
+    {
+      "path": "paper/generated/table_defense_results.tex",
+      "sha256": "ac2266c79b6c3cd9c3c367866f2d20512b45052be954710e8de1d860c2fc500a"
+    },
+    {
+      "path": "paper/generated/table_tokenizer_utility.tex",
+      "sha256": "54e5d70b9663a6cf6a90c03d6fa93bc279a4695fa463b3098fe20484990b74d6"
+    },
+    {
+      "path": "paper/generated/table_downstream.tex",
+      "sha256": "b172538b03024f47b288796c49b64e7554055cf01f772d81902ffbbcff75137a"
+    },
+    {
+      "path": "paper/generated/table_crypto.tex",
+      "sha256": "9f0a728b500d5430426eaecf5ceeff833c07f9705cac9de8be957fcaa5a940ce"
+    },
+    {
+      "path": "paper/generated/table_ablation.tex",
+      "sha256": "8d9170da2f4855d68e91b01a823f8c325d0ffbb7e78195ae4d0cc67b6dd39198"
+    },
+    {
+      "path": "paper/generated/table_security_scope.tex",
+      "sha256": "56dfe8771d7daaa5cfaba953fdb2c9a999ac9ff77b986777a140b58763b5ebc9"
+    },
+    {
+      "path": "paper/generated/table_main_summary.tex",
+      "sha256": "932735ec18729dc4fc5411eafd6047dd3dbfaa13081c0c8e1d9c2f988bea9f3f"
+    }
+  ],
+  "schema_version": 1,
+  "sources": {
+    "results/final/tables/attack_aggregates.csv": "c4316afddc65db525effa0ff9a89e3b6e6939266c0f616b4d9a8fa7bb13e316c",
+    "results/final/tables/attack_results.csv": "5b354044c8c9d89e9faa8f2465327dbfaa31972dc0268338a2c3e898472caad3",
+    "results/final/tables/crypto_benchmark.csv": "c4edab3c827af275fd9741d0642e8eef6fa5b417b791dce56517ea2662994f99",
+    "results/final/tables/dataset_statistics.csv": "dfdd02b8c90b2084a01ba541b6e51e93c3a353b0a49dec05112e09b1c9ed9917",
+    "results/final/tables/development_defense_attacks.csv": "b60d1c2d12fa602f61b18828ea01e47cba21665da1eda752694001923084d17d",
+    "results/final/tables/development_downstream.csv": "5dba87d04b632061636d297cd02ebcd8e67316d4e69a8d834764813b08fa23a4",
+    "results/final/tables/development_tokenizer_utility.csv": "8f37298a960155930273576fa633976d05fe240a1fb379719009a5e3ce29247e",
+    "results/final/tables/downstream_aggregates.csv": "1272f0d550355dae74dc1ec1109118254966df2048630c5e93f823d0615755c9",
+    "results/final/tables/downstream_results.csv": "b1b6517f02c7ef31bc696f3cc9dc85ec5246782e51a713b0cbdf9ea7d891239b",
+    "results/final/tables/paired_auc_differences.csv": "8868f988eda1590ebb11fd524b0c67b321ffb0e3a0457d707322718a7407682d",
+    "results/final/tables/shadow_sensitivity.csv": "cbdf5900b8d94afa910ee3088a60397322f99e3ba5253f3cd3813faf599107d2",
+    "results/final/tables/tokenizer_utility.csv": "9e994ea85744d4f84732df23595b21756cb906ea77da3deaa429c622c1d4e853"
+  },
+  "status": "success",
+  "table_count": 11
+}
